@@ -34,7 +34,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_hal.h"
-#include "tim.h"
+#include "adc.h"
 #include "usb_device.h"
 #include "gpio.h"
 #include "../Inc/usbd_cdc_if.h"
@@ -47,22 +47,7 @@
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
-void UpdatePWMPeriod(uint32_t val);
-volatile char delay_pwm = 0;
-void TIM7_IRQHandler(void){
-	
-	GPIOD->ODR ^= 1UL<<15;
-	
-	//if(delay_pwm == 1)
-		//GPIOA->MODER |= (GPIO_MODE_AF_PP<<16);
-	//else
-		GPIOA->MODER ^= (GPIO_MODE_AF_PP<<16);
-	
-	delay_pwm ^= 1;
-	NVIC_ClearPendingIRQ(TIM7_IRQn);
-	HAL_TIM_IRQHandler(&htim7);
-	
-}
+
 
 
 int main(void)
@@ -90,10 +75,9 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_TIM1_Init();
-	MX_TIM7_Init();
+  MX_ADC1_Init();
   MX_USB_DEVICE_Init();
-	HAL_TIM_PWM_Start(&htim1,TIM_CHANNEL_1);
+
 
   /* USER CODE BEGIN 2 */
 	
@@ -153,10 +137,6 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-
-void UpdatePWMPeriod(uint32_t val){
-	TIM1->CCR1 = val;
-}
 
 /* USER CODE END 4 */
 

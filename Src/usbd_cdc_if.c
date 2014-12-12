@@ -35,7 +35,6 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "usbd_cdc_if.h"
-#include "tim.h"
 
 /** @addtogroup STM32_USB_OTG_DEVICE_LIBRARY
   * @{
@@ -124,7 +123,7 @@ USBD_CDC_ItfTypeDef USBD_Interface_fops_FS =
   * @param  None
   * @retval Result of the opeartion: USBD_OK if all operations are OK else USBD_FAIL
   */
-/*static*/ int8_t CDC_Init_FS(void)
+static int8_t CDC_Init_FS(void)
 {
   hUsbDevice_0 = &hUsbDeviceFS;
   /* USER CODE BEGIN 4 */ 
@@ -239,35 +238,8 @@ static int8_t CDC_Control_FS  (uint8_t cmd, uint8_t* pbuf, uint16_t length)
   */
 static int8_t CDC_Receive_FS (uint8_t* Buf, uint32_t *Len)
 {
-	TIM_OC_InitTypeDef setting;
   /* USER CODE BEGIN 7 */ 
-	uint16_t value = 0;
-	uint16_t freq = 0;
-
-	value |= Buf[1];
-	value <<= 8;
-	value |= Buf[0];
 	
-	TIM1->CCR1 = value;
-	
-	freq |= Buf[3];
-	freq <<= 8;
-	freq |= Buf[2];
-	
-	if(freq > 0){
-		TIM7->ARR = freq; //2000 => 1s interrupt
-		TIM7->EGR |= 0x01;
-	}
-	else{
-		TIM7->CR1 &= ~TIM_CR1_CEN;
-		NVIC_ClearPendingIRQ(TIM7_IRQn);
-		GPIOA->MODER |= (GPIO_MODE_AF_PP<<16);
-		//wlaczyc pin na pwm
-	}
-		
-	
-
-	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_15, GPIO_PIN_SET);
 	USBD_CDC_ReceivePacket(hUsbDevice_0);
   return (USBD_OK);
   /* USER CODE END 7 */ 
@@ -288,9 +260,6 @@ uint8_t CDC_Transmit_FS(uint8_t* Buf, uint16_t Len)
 {
   uint8_t result = USBD_OK;
   /* USER CODE BEGIN 8 */ 
-	
-
-	
   USBD_CDC_SetTxBuffer(hUsbDevice_0, UserTxBufferFS, Len);   
   result = USBD_CDC_TransmitPacket(hUsbDevice_0);
   /* USER CODE END 8 */ 
