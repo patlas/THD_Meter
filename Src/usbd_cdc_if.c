@@ -61,7 +61,7 @@
 /* Define size for the receive and transmit buffer over CDC */
 /* It's up to user to redefine and/or remove those define */
 #define APP_RX_DATA_SIZE  4//2//1//512
-#define APP_TX_DATA_SIZE  1//512
+#define APP_TX_DATA_SIZE  4//512
   /* USER CODE END 1 */  
 /**
   * @}
@@ -260,7 +260,7 @@ uint8_t CDC_Transmit_FS(uint8_t* Buf, uint16_t Len)
 {
   uint8_t result = USBD_OK;
   /* USER CODE BEGIN 8 */ 
-  USBD_CDC_SetTxBuffer(hUsbDevice_0, UserTxBufferFS, Len);   
+  USBD_CDC_SetTxBuffer(hUsbDevice_0, Buf, Len);   
   result = USBD_CDC_TransmitPacket(hUsbDevice_0);
   /* USER CODE END 8 */ 
   return result;

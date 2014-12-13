@@ -47,7 +47,7 @@
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
-
+uint8_t adc_data[4];
 
 
 int main(void)
@@ -55,6 +55,7 @@ int main(void)
 	
 	uint8_t res=100;
 	int a;
+		uint32_t adc_read;
 
   /* USER CODE BEGIN 1 */
 
@@ -75,28 +76,38 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_ADC1_Init();
   MX_USB_DEVICE_Init();
 
-
-  /* USER CODE BEGIN 2 */
 	
+	ADC_init();
 	
 
-  /* USER CODE END 2 */
-
-  /* USER CODE BEGIN 3 */
-  /* Infinite loop */
-	uint8_t buff[] = "Ala";
-	//CDC_Init_FS();
+	uint8_t buff[] ="PA";
   while (1)
   {
 
-		 while(HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0) == GPIO_PIN_RESET);
+		
+	if( (ADC1->SR & ADC_SR_EOC ) == ADC_SR_EOC){
+		adc_read = ADC1->DR;
+			
+		adc_data[0] = (uint8_t) (adc_read>>24);
+		adc_data[1] = (uint8_t) (adc_read>>16);
+		adc_data[2] = (uint8_t) (adc_read>>8);
+		adc_data[3] = (uint8_t) (adc_read);
+		CDC_Transmit_FS(adc_data,4);	
+		ADC_startConv();
+	}
+		
+		
+		
+		 if(HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0) == GPIO_PIN_SET){
 			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_15, GPIO_PIN_SET);
 			HAL_Delay(1000);
 			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_15, GPIO_PIN_RESET);
-			res = CDC_Transmit_FS(buff,1);
+			CDC_Transmit_FS(buff,2);
+			ADC_startConv();
+}
+
 		a=2;
 		
   }
@@ -104,8 +115,6 @@ int main(void)
 
 }
 
-/** System Clock Configuration
-*/
 void SystemClock_Config(void)
 {
 

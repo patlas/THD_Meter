@@ -1,11 +1,14 @@
 /**
   ******************************************************************************
-  * @file    stm32f4xx_it.c
-  * @date    05/11/2014 22:41:41
-  * @brief   Interrupt Service Routines.
+  * @file    stm32f4xx_hal_pcd_ex.h
+  * @author  MCD Application Team
+  * @version V1.1.0
+  * @date    19-June-2014
+  * @brief   Header file of PCD HAL module.
   ******************************************************************************
+  * @attention
   *
-  * COPYRIGHT(c) 2014 STMicroelectronics
+  * <h2><center>&copy; COPYRIGHT(c) 2014 STMicroelectronics</center></h2>
   *
   * Redistribution and use in source and binary forms, with or without modification,
   * are permitted provided that the following conditions are met:
@@ -30,46 +33,46 @@
   * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   *
   ******************************************************************************
-  */
+  */ 
+
+/* Define to prevent recursive inclusion -------------------------------------*/
+#ifndef __STM32F4xx_HAL_PCD_EX_H
+#define __STM32F4xx_HAL_PCD_EX_H
+
+#ifdef __cplusplus
+ extern "C" {
+#endif
+
 /* Includes ------------------------------------------------------------------*/
-#include "stm32f4xx_hal.h"
-#include "stm32f4xx.h"
-#include "stm32f4xx_it.h"
+#include "stm32f4xx_hal_def.h"
+   
+/** @addtogroup STM32F4xx_HAL_Driver
+  * @{
+  */
 
-/* External variables --------------------------------------------------------*/
+/** @addtogroup PCDEx
+  * @{
+  */
 
-extern PCD_HandleTypeDef hpcd_USB_OTG_FS;
-extern ADC_HandleTypeDef hadc1;
+/* Exported functions --------------------------------------------------------*/
 
-/******************************************************************************/
-/*            Cortex-M4 Processor Interruption and Exception Handlers         */ 
-/******************************************************************************/
-
-/**
-* @brief This function handles ADC1, ADC2 and ADC3 global interrupts.
-*/
-/*void ADC_IRQHandler(void)
-{
-  HAL_NVIC_ClearPendingIRQ(ADC_IRQn);
-  HAL_ADC_IRQHandler(&hadc1);
-}*/
+/* Peripheral Extended functions  *********************************************/
+HAL_StatusTypeDef HAL_PCDEx_SetTxFiFo(PCD_HandleTypeDef *hpcd, uint8_t fifo, uint16_t size);
+HAL_StatusTypeDef HAL_PCDEx_SetRxFiFo(PCD_HandleTypeDef *hpcd, uint16_t size);
 
 /**
-* @brief This function handles System tick timer.
-*/
-void SysTick_Handler(void)
-{
-  HAL_IncTick();
-  HAL_SYSTICK_IRQHandler();
+  * @}
+  */ 
+
+/**
+  * @}
+  */ 
+
+#ifdef __cplusplus
 }
+#endif
 
-/**
-* @brief This function handles USB On The Go FS global interrupt.
-*/
-void OTG_FS_IRQHandler(void)
-{
-  HAL_NVIC_ClearPendingIRQ(OTG_FS_IRQn);
-  HAL_PCD_IRQHandler(&hpcd_USB_OTG_FS);
-}
+
+#endif /* __STM32F4xx_HAL_PCD_EX_H */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

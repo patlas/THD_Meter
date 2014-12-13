@@ -45,6 +45,8 @@
 extern ADC_HandleTypeDef hadc1;
 
 void MX_ADC1_Init(void);
+void ADC_init(void);
+void ADC_startConv(void);
 
 #ifdef __cplusplus
 }
